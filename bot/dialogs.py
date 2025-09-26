@@ -1,6 +1,6 @@
 from typing import Any, Dict
 from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import Dialog, DialogManager, Window
+from aiogram_dialog import Dialog, DialogManager, Window, ShowMode
 from aiogram_dialog.widgets.text import Const, Format
 from aiogram_dialog.widgets.kbd import Button, Column, Select
 from aiogram_dialog.widgets.input import TextInput
@@ -16,15 +16,15 @@ PACKAGES_TEXT = """Мы предлагаем посетить конференц
 
 1. Деловая программа - участие в мероприятиях третьего дня конференции (25 октября). 
 Вас ждут интересные лекции от топовых спикеров, панельные дискуссии на актуальные темы, а также интерактивное мероприятие для выпускников с перерывом на нетворкинг. Вы сможете отработать навык целеполагания и деловой коммуникации и получить массу новых знакомств. Сплошная польза с утра и до самого вечера.
-Стоимость: 3 000р
+Стоимость: 2 990р
 
 2. Гала-ужин - закрытие конференции в ресторане с панорамным видом на Петербург.
 Ваш шанс за бокалом игристого пообщаться с нынешними участниками конференции - насладиться приятной компанией и вкусным фуршетом. 
-Стоимость: 3 500р
+Стоимость: 3 490р
 
 3. Деловая программа и гала-ужин - целый день интересных мероприятий и прекрасный праздник вечером.
 Сначала послушаете все самые крутые мероприятия третьего дня, а вечером отдохнете на ужине в ресторане с видом на ночной город.
-Стоимость: 6 000р
+Стоимость: 5 990р
 
 Чтобы попасть в лист ожидания, выбери пакет участия, который тебе наиболее интересен."""
 
@@ -45,7 +45,7 @@ async def get_packages_data(**kwargs):
 # Обработчики кнопок и ввода
 async def on_package_selected(callback: CallbackQuery, widget, dialog_manager: DialogManager, item_id: str):
     dialog_manager.dialog_data["package_type"] = item_id
-    await dialog_manager.switch_to(RegistrationSG.first_name)
+    await dialog_manager.switch_to(RegistrationSG.first_name, show_mode=ShowMode.SEND)
 
 
 async def on_first_name_input(message: Message, widget, dialog_manager: DialogManager, text: str):
