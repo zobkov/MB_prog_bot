@@ -1,4 +1,4 @@
 #!/bin/bash
 systemctl daemon-reload
-systemctl restart cbc_crew_bot
-journalctl -u cbc_crew_bot.service -f
+systemctl restart mb_alumni_bot
+journalctl -u mb_alumni_bot.service -f
