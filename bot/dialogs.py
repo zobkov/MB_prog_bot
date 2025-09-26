@@ -108,6 +108,7 @@ async def complete_registration(callback, widget, dialog_manager: DialogManager)
     # Сохранение данных в БД
     user_data = {
         "telegram_id": dialog_manager.event.from_user.id,
+        "username": dialog_manager.event.from_user.username,  # Telegram username
         "first_name": dialog_manager.dialog_data["first_name"],
         "last_name": dialog_manager.dialog_data["last_name"],
         "package_type": dialog_manager.dialog_data["package_type"],
@@ -117,17 +118,34 @@ async def complete_registration(callback, widget, dialog_manager: DialogManager)
         "graduation_year": dialog_manager.dialog_data.get("graduation_year"),
     }
     
+    saved_user = None
+    
     # Сохранение в БД
     try:
         user_repo = dialog_manager.middleware_data.get('user_repo')
         if user_repo:
-            await user_repo.create_user(user_data)
+            saved_user = await user_repo.create_user(user_data)
             print(f"✅ Пользователь {user_data['telegram_id']} успешно сохранен в БД")
         else:
             print("⚠️ UserRepository не найден в middleware_data")
     except Exception as e:
         # Логируем ошибку, но продолжаем работу
         print(f"❌ Ошибка сохранения пользователя: {e}")
+    
+    # Сохранение в Google Sheets
+    if saved_user:
+        try:
+            google_sheets = dialog_manager.middleware_data.get('google_sheets')
+            if google_sheets:
+                success = google_sheets.add_user_to_sheet(saved_user)
+                if success:
+                    print(f"✅ Пользователь {user_data['telegram_id']} успешно добавлен в Google Sheets")
+                else:
+                    print(f"⚠️ Не удалось добавить пользователя в Google Sheets")
+            else:
+                print("⚠️ Google Sheets сервис не найден в middleware_data")
+        except Exception as e:
+            print(f"❌ Ошибка записи в Google Sheets: {e}")
     
     await dialog_manager.switch_to(RegistrationSG.completed)
 

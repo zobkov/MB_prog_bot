@@ -9,6 +9,7 @@ class User(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     telegram_id = Column(Integer, unique=True, nullable=False, index=True)
+    username = Column(String(100), nullable=True)  # Telegram username (может отсутствовать)
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
     package_type = Column(String(50), nullable=False)  # business, gala, full

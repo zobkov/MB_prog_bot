@@ -11,6 +11,8 @@ from config.config import load_config
 from bot.handlers import router
 from bot.dialogs import registration_dialog
 from bot.database import Database, UserRepository
+from bot.google_sheets import GoogleSheetsService
+from bot.google_sheets_middleware import GoogleSheetsMiddleware
 
 
 async def main():
@@ -55,15 +57,30 @@ async def main():
     await database.create_tables()
     user_repo = UserRepository(database)
     
-    # Middleware для передачи database и user_repo
-    async def database_middleware(handler, event, data):
+    # Создание Google Sheets сервиса
+    google_sheets_service = None
+    try:
+        if config.google_sheets.spreadsheet_url and config.google_sheets.credentials_path:
+            google_sheets_service = GoogleSheetsService(
+                config.google_sheets.credentials_path,
+                config.google_sheets.spreadsheet_url
+            )
+            print("✅ Google Sheets сервис инициализирован")
+        else:
+            print("⚠️ Конфигурация Google Sheets не найдена")
+    except Exception as e:
+        print(f"⚠️ Ошибка инициализации Google Sheets: {e}")
+    
+    # Middleware для передачи database, user_repo и google_sheets
+    async def services_middleware(handler, event, data):
         data["database"] = database
         data["user_repo"] = user_repo
+        data["google_sheets"] = google_sheets_service
         return await handler(event, data)
     
     # Регистрация middleware
-    dp.message.middleware(database_middleware)
-    dp.callback_query.middleware(database_middleware)
+    dp.message.middleware(services_middleware)
+    dp.callback_query.middleware(services_middleware)
     
     # Регистрация роутеров и диалогов
     dp.include_router(router)

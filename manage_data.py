@@ -33,6 +33,8 @@ async def show_all_users():
             for user in users:
                 print(f"👤 ID: {user.id}")
                 print(f"   Telegram ID: {user.telegram_id}")
+                username_display = f"@{user.username}" if user.username else "Нет username"
+                print(f"   Username: {username_display}")
                 print(f"   Имя: {user.first_name} {user.last_name}")
                 print(f"   Пакет: {user.package_type}")
                 print(f"   Участвовал в МБ ранее: {'Да' if user.participated_before else 'Нет'}")

@@ -52,14 +52,30 @@ class UserRepository:
             await session.close()
     
     async def create_user(self, user_data: dict) -> User:
-        """Создание нового пользователя"""
+        """Создание нового пользователя или обновление существующего"""
         session = await self.db.get_session()
         try:
-            user = User(**user_data)
-            session.add(user)
-            await session.commit()
-            await session.refresh(user)
-            return user
+            # Сначала проверяем, существует ли пользователь
+            existing_user_result = await session.execute(
+                select(User).where(User.telegram_id == user_data["telegram_id"])
+            )
+            existing_user = existing_user_result.scalar_one_or_none()
+            
+            if existing_user:
+                # Обновляем существующего пользователя
+                for key, value in user_data.items():
+                    if key != "telegram_id":  # telegram_id не меняем
+                        setattr(existing_user, key, value)
+                await session.commit()
+                await session.refresh(existing_user)
+                return existing_user
+            else:
+                # Создаем нового пользователя
+                user = User(**user_data)
+                session.add(user)
+                await session.commit()
+                await session.refresh(user)
+                return user
         finally:
             await session.close()
     

@@ -24,10 +24,16 @@ class Bot:
     token: str
 
 @dataclass
+class GoogleSheetsConfig:
+    credentials_path: str
+    spreadsheet_url: str
+
+@dataclass
 class Config:
     bot: Bot
     db: DatabaseConfig
     redis: RedisConfig
+    google_sheets: GoogleSheetsConfig
 
 def load_config(path: str = None) -> Config:
     # Загружаем переменные окружения
@@ -49,8 +55,14 @@ def load_config(path: str = None) -> Config:
         password=env.str("REDIS_PASSWORD", "")
     )
     
+    google_sheets = GoogleSheetsConfig(
+        credentials_path=env.str("GOOGLE_CREDENTIALS_PATH", "credentials.json"),
+        spreadsheet_url=env.str("GOOGLE_SPREADSHEET_URL", "")
+    )
+    
     return Config(
         bot=bot,
         db=db,
-        redis=redis
+        redis=redis,
+        google_sheets=google_sheets
     )
