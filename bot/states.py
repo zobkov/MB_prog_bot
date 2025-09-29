@@ -5,6 +5,9 @@ class RegistrationSG(StatesGroup):
     # Приветствие
     welcome = State()
     
+    # Программа дня
+    program_info = State()
+    
     # Выбор пакета
     package_selection = State()
     

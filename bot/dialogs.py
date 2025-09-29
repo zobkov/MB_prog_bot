@@ -30,14 +30,20 @@ PACKAGES_TEXT = """Мы предлагаем посетить конференц
 
 COMPLETION_TEXT = """Спасибо, что зарегистрировался! В этот бот придет уведомление, когда откроются продажи. Не пропусти!"""
 
+PROGRAM_TEXT = """<b>3-й день: Личностное развитие</b>
+
+Завершающий день конференции посвящен развитию креативности и личной эффективности. Спикеры раскроют секреты становления успешным специалистом и определят ключевые софт скиллы, необходимые в современной карьере. В программе — интерактивные дискуссии о роли творческого мышления в бизнесе и нетворкинг-сессии для создания профессиональных связей.
+
+Подробная программа дня появится позже. Жди уведомлений в боте!"""
+
 
 # Геттеры данных для диалогов
 async def get_packages_data(**kwargs):
     return {
         "packages": [
             ("Деловая программа - 2 990", "business"),
-            ("Гала-ужин - 3 490р", "gala"),
-            ("Деловая программа и гала-ужин - 5 990р", "full"),
+            ("Гала-ужин - 3 490", "gala"),
+            ("Деловая программа и гала-ужин - 5 990", "full"),
         ]
     }
 
@@ -155,12 +161,30 @@ registration_dialog = Dialog(
     # Окно приветствия
     Window(
         Const(WELCOME_TEXT),
-        Button(
-            Const("Как можно поучаствовать?"),
-            id="how_to_participate",
-            on_click=lambda c, w, m: m.switch_to(RegistrationSG.package_selection)
+        Column(
+            Button(
+                Const("Как можно поучаствовать?"),
+                id="how_to_participate",
+                on_click=lambda c, w, m: m.switch_to(RegistrationSG.package_selection)
+            ),
+            Button(
+                Const("А что в программе?"),
+                id="show_program",
+                on_click=lambda c, w, m: m.switch_to(RegistrationSG.program_info)
+            ),
         ),
         state=RegistrationSG.welcome,
+    ),
+    
+    # Окно программы дня
+    Window(
+        Const(PROGRAM_TEXT),
+        Button(
+            Const("◀️ Назад"),
+            id="back_to_welcome",
+            on_click=lambda c, w, m: m.switch_to(RegistrationSG.welcome)
+        ),
+        state=RegistrationSG.program_info,
     ),
     
     # Окно выбора пакетов
