@@ -121,9 +121,9 @@ class GoogleSheetsService:
     def _get_package_name(self, package_type: str) -> str:
         """Получение читаемого названия пакета"""
         package_names = {
-            'gala': '🎪 Гала-ужин (10,000₽)',
-            'dinner': '🍽️ Ужин (7,000₽)',
-            'afterparty': '🎉 Афтепати (3,000₽)'
+            'business': 'Деловая программа - 2 990₽',
+            'gala': 'Гала-ужин - 3 490₽',
+            'full': 'Деловая программа и гала-ужин - 5 990₽'
         }
         return package_names.get(package_type, package_type)
     
@@ -157,12 +157,12 @@ class GoogleSheetsService:
             for record in all_records:
                 # Статистика по пакетам
                 package = record.get('Пакет участия', '')
-                if 'Гала-ужин' in package:
+                if 'Деловая программа и гала-ужин' in package:
+                    packages['full'] = packages.get('full', 0) + 1
+                elif 'Гала-ужин' in package and 'программа' not in package:
                     packages['gala'] = packages.get('gala', 0) + 1
-                elif 'Ужин' in package:
-                    packages['dinner'] = packages.get('dinner', 0) + 1
-                elif 'Афтепати' in package:
-                    packages['afterparty'] = packages.get('afterparty', 0) + 1
+                elif 'Деловая программа' in package and 'гала-ужин' not in package:
+                    packages['business'] = packages.get('business', 0) + 1
                 
                 # Остальная статистика
                 if record.get('Участвовал ранее') == 'Да':
