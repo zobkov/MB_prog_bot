@@ -186,11 +186,6 @@ registration_dialog = Dialog(
         Const(WELCOME_TEXT),
         Column(
             Button(
-                Const("Как можно поучаствовать?"),
-                id="how_to_participate",
-                on_click=lambda c, w, m: m.switch_to(RegistrationSG.package_selection)
-            ),
-            Button(
                 Const("А что в программе?"),
                 id="show_program",
                 on_click=lambda c, w, m: m.switch_to(RegistrationSG.program_info)
