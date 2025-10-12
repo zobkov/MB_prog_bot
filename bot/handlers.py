@@ -1,8 +1,9 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.filters import CommandStart, Command
 from aiogram_dialog import DialogManager, StartMode
 from bot.states import RegistrationSG
+from bot.media_manager import MediaManager
 
 router = Router()
 
@@ -13,11 +14,62 @@ ADMIN_ID = 257026813
 @router.message(CommandStart())
 async def start_command(message: Message, dialog_manager: DialogManager):
     """Обработчик команды /start"""
+    # Получаем MediaManager из middleware
+    media_manager = dialog_manager.middleware_data.get('media_manager')
+    
+    if media_manager:
+        try:
+            # Получаем file_id для alumni1.jpg
+            file_id = await media_manager.get_file_id("alumni1.jpg")
+            if file_id:
+                # Отправляем изображение
+                await message.answer_photo(
+                    photo=file_id,
+                )
+            else:
+                # Если file_id не получен, отправляем файл напрямую
+                try:
+                    photo = FSInputFile("alumni1.jpg")
+                    await message.answer_photo(
+                        photo=photo,
+                    )
+                except Exception as e:
+                    print(f"⚠️ Не удалось отправить изображение: {e}")
+        except Exception as e:
+            print(f"⚠️ Ошибка при отправке изображения: {e}")
+    
+    # Запускаем диалог
     await dialog_manager.start(RegistrationSG.welcome, mode=StartMode.RESET_STACK)
 
 
 @router.message(Command(commands=['menu']))
 async def process_command_menu(message: Message, dialog_manager: DialogManager):
+    """Обработчик команды /menu"""
+    # Получаем MediaManager из middleware
+    media_manager = dialog_manager.middleware_data.get('media_manager')
+    
+    if media_manager:
+        try:
+            # Получаем file_id для alumni1.jpg
+            file_id = await media_manager.get_file_id("alumni1.jpg")
+            if file_id:
+                # Отправляем изображение
+                await message.answer_photo(
+                    photo=file_id,
+                )
+            else:
+                # Если file_id не получен, отправляем файл напрямую
+                try:
+                    photo = FSInputFile("alumni1.jpg")
+                    await message.answer_photo(
+                        photo=photo,
+                    )
+                except Exception as e:
+                    print(f"⚠️ Не удалось отправить изображение: {e}")
+        except Exception as e:
+            print(f"⚠️ Ошибка при отправке изображения: {e}")
+    
+    # Запускаем диалог
     await dialog_manager.start(state=RegistrationSG.welcome, mode=StartMode.RESET_STACK)
 
 

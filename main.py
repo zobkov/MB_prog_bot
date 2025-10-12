@@ -13,6 +13,7 @@ from bot.dialogs import registration_dialog
 from bot.database import Database, UserRepository
 from bot.google_sheets import GoogleSheetsService
 from bot.google_sheets_middleware import GoogleSheetsMiddleware
+from bot.media_manager import MediaManager
 
 
 async def main():
@@ -71,11 +72,15 @@ async def main():
     except Exception as e:
         print(f"⚠️ Ошибка инициализации Google Sheets: {e}")
     
-    # Middleware для передачи database, user_repo и google_sheets
+    # Создание MediaManager
+    media_manager = MediaManager(bot)
+    
+    # Middleware для передачи database, user_repo, google_sheets и media_manager
     async def services_middleware(handler, event, data):
         data["database"] = database
         data["user_repo"] = user_repo
         data["google_sheets"] = google_sheets_service
+        data["media_manager"] = media_manager
         return await handler(event, data)
     
     # Регистрация middleware
