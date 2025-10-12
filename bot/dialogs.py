@@ -2,7 +2,7 @@ from typing import Any, Dict
 from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import Dialog, DialogManager, Window, ShowMode
 from aiogram_dialog.widgets.text import Const, Format
-from aiogram_dialog.widgets.kbd import Button, Column, Select
+from aiogram_dialog.widgets.kbd import Button, Column, Select, Back
 from aiogram_dialog.widgets.input import TextInput
 from bot.states import RegistrationSG
 
@@ -222,6 +222,7 @@ registration_dialog = Dialog(
                 on_click=on_package_selected,
             ),
         ),
+        Back(Const(PROGRAM_TEXT)),
         getter=get_packages_data,
         state=RegistrationSG.package_selection,
     ),
