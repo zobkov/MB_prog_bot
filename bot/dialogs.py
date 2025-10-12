@@ -222,7 +222,7 @@ registration_dialog = Dialog(
                 on_click=on_package_selected,
             ),
         ),
-        Back(Const(PROGRAM_TEXT)),
+        Back(Const("◀️ Назад")),
         getter=get_packages_data,
         state=RegistrationSG.package_selection,
     ),
