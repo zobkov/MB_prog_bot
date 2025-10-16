@@ -167,7 +167,6 @@ async def handle_confirm_payment(callback: CallbackQuery, user_repo):
 ✅ Пользователь подтвердил оплату участия в МБ'25"""
     
     # Удаляем оригинальное сообщение и отправляем новое
-    await callback.message.delete()
     await callback.message.answer(confirm_text)
     
     # Отправка уведомления администратору
@@ -212,7 +211,6 @@ async def handle_decline_participation(callback: CallbackQuery, user_repo):
 💔 Пользователь отказался от участия в МБ'25"""
     
     # Удаляем оригинальное сообщение и отправляем новое
-    await callback.message.delete()
     await callback.message.answer(decline_text)
     
     # Отправка уведомления администратору
